@@ -20,6 +20,7 @@ class ServerExample {
             console.log(`Server is listening on port ${port} 💎`);
         });
 
+        this.server.on('error', (error) => {
             console.log(`Failed to run server ${error}`);
         });
     }
