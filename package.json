@@ -27,7 +27,7 @@
     "sass": "^1.17.0"
   },
   "scripts": {
-    "dev": "node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

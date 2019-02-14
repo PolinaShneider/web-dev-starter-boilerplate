@@ -7,9 +7,9 @@ jsonFromFile.addEventListener('click', function() {
     ajax.get({
         url: 'http://localhost:8008/fromFile'
     }).then((result) => {
-        console.log('Reading JSON from file result', result.body.data);
+        console.log('Результат чтения JSON из файла:', result.body.data);
     }).catch((error) => {
-        console.log('Error when reading from file:', error);
+        console.log('Ошибка чтения JSON из файла:', error);
     })
 });
 
@@ -22,8 +22,8 @@ jsonFromLink.addEventListener('click', function () {
             url
         }
     }).then((result) => {
-        console.log('Fetching from url JSON result', result.body.data);
+        console.log('Результат чтения JSON по ссылке:', result.body.data);
     }).catch((error) => {
-        console.log('Error when fetching JSON from url:', error);
+        console.log('Ошибка чтения JSON по ссылке:', error);
     })
 });
