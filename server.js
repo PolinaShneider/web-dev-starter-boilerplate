@@ -1,7 +1,7 @@
 /**
  * Sample HTTP server
  * [!] Use it only for debugging purposes
- * 
+ *
  * node server.js
  */
 const http = require('http');
@@ -10,10 +10,9 @@ const request = require('request');
 
 
 class ServerExample {
-    constructor({port, fieldName}) {
-        this.fieldName = fieldName;
-        this.server = http.createServer((req, res) => {
-            this.onRequest(req, res);
+    constructor({port}) {
+        this.server = http.createServer((request, response) => {
+            this.onRequest(request, response);
         }).listen(port);
 
         this.server.on('listening', () => {
@@ -27,46 +26,55 @@ class ServerExample {
 
     /**
      * Request handler
-     * @param {http.IncomingMessage} req
-     * @param {http.ServerResponse} res
+     * @param {http.IncomingMessage} request
+     * @param {http.ServerResponse} response
      */
-    onRequest(req, res) {
-        this.allowCors(res);
+    onRequest(request, response) {
+        ServerExample.allowCors(response);
 
-        const {url} = req;
+        const {url} = request;
 
         if (url.indexOf('fromFile') > -1) {
-            this.readJsonFromFile(res);
+            this.readJsonFromFile(response);
         } else if (url.indexOf('fetchUrl') > -1) {
             const link = decodeURIComponent(url.slice('/fetchUrl?url='.length));
-            this.fetchFromLink(res, link);
+            this.fetchFromLink(response, link);
         }
 
     }
 
-    readJsonFromFile(res) {
-        fs.readFile('data.json', 'utf8', function (err, data) {
+    /**
+     * Read JSON from file 'data.json' in repository
+     * @param response - server response
+     */
+    readJsonFromFile(response) {
+        fs.readFile('src/files/data.json', 'utf8', function (err, data) {
             if (err) throw err;
-            res.end(JSON.stringify ({
+            response.end(JSON.stringify ({
                 success: 1,
                 data: JSON.parse(data)
             }));
         });
     }
 
-    fetchFromLink(res, link) {
+    /**
+     * Read JSON from link and return to front-end
+     * @param response - server response
+     * @param link - link to JSON
+     */
+    fetchFromLink(response, link) {
         request({
             url: link,
             json: true
-        }, function (error, response, body) {
+        }, function (error, result, body) {
 
-            if (!error && response.statusCode === 200) {
-                res.end(JSON.stringify ({
+            if (!error && result.statusCode === 200) {
+                response.end(JSON.stringify ({
                     success: 1,
                     data: body
                 }));
             } else {
-                res.end(JSON.stringify ({
+                response.end(JSON.stringify ({
                     success: 0,
                     data: {}
                 }));
@@ -78,7 +86,7 @@ class ServerExample {
      * Allows CORS requests for debugging
      * @param response
      */
-    allowCors(response) {
+    static allowCors(response) {
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Access-Control-Allow-Credentials', 'true');
         response.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
@@ -87,6 +95,5 @@ class ServerExample {
 }
 
 new ServerExample({
-    port: 8008,
-    fieldName: 'link'
+    port: 8008
 });
