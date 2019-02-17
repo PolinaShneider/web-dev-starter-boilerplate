@@ -27,7 +27,8 @@
     "sass": "^1.17.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "parcel src/markup/index.html --out-dir public -p 1987"
   },
   "repository": {
     "type": "git",
